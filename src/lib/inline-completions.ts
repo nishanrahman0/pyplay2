@@ -13,7 +13,7 @@ export function registerInlineCompletions(monaco: typeof Monaco, fetcher: Sugges
   if (registered) return;
 
   registered = monaco.languages.registerInlineCompletionsProvider("python", {
-    async provideInlineCompletions(model, position, _ctx, token) {
+    async provideInlineCompletions(model: any, position: any, _ctx: any, token: any) {
       if (!enabled || !currentFetcher) return { items: [] };
       // Don't suggest while typing inside whitespace-only line if line is super short
       const value = model.getValue();
