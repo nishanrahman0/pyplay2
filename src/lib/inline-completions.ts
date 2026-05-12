@@ -43,10 +43,10 @@ export function registerInlineCompletions(monaco: typeof Monaco, fetcher: Sugges
         return { items: [] };
       }
     },
-    freeInlineCompletions() {
-      // nothing to free
-    },
-  });
+    handleItemDidShow() {},
+    handlePartialAccept() {},
+    freeInlineCompletions() {},
+  } as any);
 }
 
 export function setInlineCompletionsEnabled(value: boolean) {
