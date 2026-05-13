@@ -82,4 +82,3 @@ sys.stderr = _stderr_capture
   }
 };
 
-export {};
