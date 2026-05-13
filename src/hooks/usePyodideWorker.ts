@@ -67,18 +67,35 @@ export function usePyodideWorker() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    spawn();
+    let cancelled = false;
+    try {
+      spawn();
+    } catch (e: any) {
+      setError(`Failed to start Python worker: ${e?.message ?? e}`);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-    send("init")
-      .then(() => {
-        setLoading(false);
+    // Startup check: init Pyodide, then run a tiny sanity snippet to confirm
+    // the classic worker actually works end-to-end before marking ready.
+    (async () => {
+      try {
+        await send("init", undefined, 60000);
+        const sanity = await send("run", { code: "print('ok')" }, 15000);
+        if (cancelled) return;
+        if (sanity?.error || sanity?.output?.trim() !== "ok") {
+          throw new Error(sanity?.error || "Python runtime failed startup self-test");
+        }
         setError(null);
-      })
-      .catch((e) => {
-        setError(e.message || "Failed to load Python runtime");
         setLoading(false);
-      });
+      } catch (e: any) {
+        if (cancelled) return;
+        setError(e?.message || "Failed to load Python runtime");
+        setLoading(false);
+      }
+    })();
     return () => {
+      cancelled = true;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
