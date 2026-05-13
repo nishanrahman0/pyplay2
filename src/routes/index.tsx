@@ -74,7 +74,7 @@ const DEFAULT_CELLS = (): CellData[] => [
 ];
 
 function Index() {
-  const { loading: pyLoading, runCode, installPackage, installingPackage, stop } =
+  const { loading: pyLoading, error: pyError, runCode, installPackage, installingPackage, stop } =
     usePyodideWorker();
   const isMobile = useIsMobile();
   const cellsRef = useRef<CellData[]>([]);
