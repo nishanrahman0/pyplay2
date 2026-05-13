@@ -1,13 +1,6 @@
 /// <reference lib="webworker" />
-// Pyodide Web Worker — isolates Python execution from the main thread so
-// infinite loops or memory blow-ups don't freeze the UI. Recreate the worker
-// to "stop" a runaway computation.
-declare const self: DedicatedWorkerGlobalScope;
+// Pyodide Web Worker — classic worker (uses importScripts).
 
-declare global {
-  // eslint-disable-next-line no-var
-  var loadPyodide: ((config: { indexURL: string }) => Promise<unknown>) | undefined;
-}
 
 let pyodide: any = null;
 let ready: Promise<void> | null = null;
@@ -82,4 +75,3 @@ sys.stderr = _stderr_capture
   }
 };
 
-export {};

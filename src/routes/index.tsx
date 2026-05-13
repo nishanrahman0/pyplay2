@@ -74,7 +74,7 @@ const DEFAULT_CELLS = (): CellData[] => [
 ];
 
 function Index() {
-  const { loading: pyLoading, runCode, installPackage, installingPackage, stop } =
+  const { loading: pyLoading, error: pyError, runCode, installPackage, installingPackage, stop } =
     usePyodideWorker();
   const isMobile = useIsMobile();
   const cellsRef = useRef<CellData[]>([]);
@@ -391,6 +391,15 @@ function Index() {
       {/* Notebook body — page-level scroll, NOT inner overflow, so mobile can scroll past Monaco */}
       <main className="flex-1 bg-background pb-24">
         <div className="mx-auto max-w-4xl p-2 sm:p-6 space-y-2 sm:space-y-3">
+          {pyError && (
+            <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm">
+              <div className="font-semibold text-destructive mb-1">Python runtime failed to start</div>
+              <div className="text-muted-foreground break-words mb-3">{pyError}</div>
+              <Button size="sm" variant="outline" onClick={() => window.location.reload()}>
+                Reload page
+              </Button>
+            </div>
+          )}
           {cells.map((cell, i) => (
             <ErrorBoundary key={cell.id} fallbackTitle="Cell crashed">
               <NotebookCell
