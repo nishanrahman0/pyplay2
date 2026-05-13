@@ -28,9 +28,7 @@ export function usePyodideWorker() {
     pendingRef.current.clear();
     if (workerRef.current) workerRef.current.terminate();
 
-    const w = new Worker(new URL("../workers/pyodide.worker.ts", import.meta.url), {
-      type: "module",
-    });
+    const w = new Worker(new URL("../workers/pyodide.worker.ts", import.meta.url));
     w.onmessage = (e: MessageEvent) => {
       const { id, ok, result, error: err } = e.data ?? {};
       const pending = pendingRef.current.get(id);
